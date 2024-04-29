@@ -32,7 +32,7 @@ int main(){
             {6, "ramon",   "450848",  32540.23  }, // registro 5
             {7, "jacinto", "830848",  32460.55  }, // registro 6
         };
-    printf("record size = %ld\n", sizeof(Empleado) );
+    printf("record size = %ld\n", sizeof( Empleado ) );
     int fd = open("db.personas", O_WRONLY|O_CREAT|O_TRUNC, 0600 );
     write( fd, (void *)empleados, 7*sizeof( Empleado) );
     close(fd);
