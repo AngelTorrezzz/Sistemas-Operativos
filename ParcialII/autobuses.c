@@ -8,43 +8,46 @@
 
 void *h1(void *);
 
-int saldo = 500;
+int boleto = 0, boletos[5];
 pthread_mutex_t lock;
 
 int main()
 {
     // Los hilos son procesos q se ejecutan infinitamente
-    pthread_t hilos[2];
-    printf("Hilo main\n");
-    printf("SALDO = %d\n\n", saldo);
-    int clientes[2] = {1, 2};
-    int tamano = strlen(clientes);
+    pthread_t hilos[10];
+    printf("Hilo main\n\n");
+    int clientes[10];
+
+    for(int i=0; i<10; i++){
+        boletos[i] = 0;//Inicializa los boletos en 0
+        clientes[i] = i;
+    }
 
     pthread_mutex_init( &lock, NULL); //Buen lugar para inicilizar candados (antes de ejecutar las hilos)
-    for (int i = 0; i < tamano+1 ; i++)
+    for (int i = 0; i < 10 ; i++)
         pthread_create(&hilos[i], NULL, h1, (void *)&clientes[i]); // hilo_1 ejectuta el mismo codigo
     
-    for (int j = 0; j < tamano+1 ; j++)
+    for (int j = 0; j < 10 ; j++)
         pthread_join(hilos[j], NULL);// Detiene a main, misma funcion que el wait()
 
-    printf("\nSALDO = %d\n", saldo);
     printf("fin de main\n");
     return 0;
 }
 
 void *h1(void *s)
 {
-    int cliente = *(int *)s;
-    printf("Cliente entrante: %d\n", cliente);
+    int i = *(int *)s;
+
+    printf("Cliente: %d   ", i+1);
 
     pthread_mutex_lock( &lock );//Manda a dormir los otros hilos hasta que se termine de ejecutar el candado
-    if (saldo >= 500){
-        // sleep(1); //Se puso para simular el ejemplo donde se retira dos veces
-        saldo = saldo - 500;
-        printf("El cliente %d hizo un retiro exitoso\n", cliente);
+    if (boletos[boleto] == 0 && boleto < 5){
+        printf("Boleto: %d\n", boleto+1);
+        boletos[boleto] = 1;
+        boleto++;
     }else
-        printf("El cliente %d NO hizo un retiro exitoso \n", cliente);
-    pthread_mutex_unlock( &lock );//Debe cerrarse SI O SI MAK
+        printf("Boletos VENDIDOS\n");
+    pthread_mutex_unlock( &lock );
 
     pthread_exit(NULL);
 }
