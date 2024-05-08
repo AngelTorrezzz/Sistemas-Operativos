@@ -47,11 +47,11 @@ void *esperar_amigo(void *s){
     int *hilo = (int *)s;
     
     sem_wait( &semaforo );//Decrementa contador en 1
-    printf("Soy el hilo: %d\n", *hilo);
+    printf("Soy El Amigo: %d\n", *hilo);
     cuentaHilo--;
     //printf("CuentaHilo: %d\n", cuentaHilo);
     if(cuentaHilo == 0){
-        printf("Soy el hilo: %d, soy el ultimo y liberare a mis amigos\n", *hilo);
+        printf("Soy El Amigo: %d, soy el ultimo y liberare a mis amigos\n", *hilo);
         x = -1;
     }
     while(x==-1)
