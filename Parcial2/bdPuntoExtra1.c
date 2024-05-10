@@ -16,7 +16,12 @@ int main(){
     Empleado empleado;
     
     int fd = open("db.personas", O_RDONLY );
-    int tamanoArchivo = lseek( fd, 0, SEEK_END );
+    int tamanoArchivo = lseek( fd, 0, SEEK_END );// Obtiene el tamaño del archivo
+    //parametros de lseek: descriptor de archivo, desplazamiento, origen de desplazamiento
+    // SEEK_SET: inicio del archivo
+    // SEEK_CUR: posición actual
+    // SEEK_END: final del archivo
+
     //printf("tamano archivo = %d\n", tamanoArchivo );
     //printf("record size = %ld\n", sizeof( Empleado ) );
     int cantidadRegistros = tamanoArchivo / sizeof( Empleado );
