@@ -108,7 +108,7 @@ void terminarProceso(int pid) {
 }
 
 void mostrar() {
-    printf("Procesos en Ejecucion:\n");
+    printf("\nProcesos en Ejecucion:\n");
     for (int i = 0; i < contador_procesos; i++) {
         printf(" - ID: %d, Paginas: %d\n", procesos[i]->pid, procesos[i]->numero_pagina);
     }
@@ -133,6 +133,17 @@ void mostrar() {
     }
 }
 
+void MostrarMemoria(){
+    printf("\nEstado de la Memoria:\n");
+    for (int i = 0; i < NUM_MARCOS; i++) {
+        if (marcos[i].id_proceso == -1) {
+            printf("Marco %d: Libre\n", i);
+        } else {
+            printf("Marco %d: Proceso %d, Pagina %d\n", i, marcos[i].id_proceso, marcos[i].numero_pagina);
+        }
+    }
+}
+
 int main() {
     // Initialize marcos
     for (int i = 0; i < NUM_MARCOS; i++) {
@@ -145,9 +156,10 @@ int main() {
         printf("\nMenu de Opciones:\n");
         printf("1. Agregar Proceso\n");
         printf("2. Terminar Proceso\n");
-        printf("3. Salir\n");
+        printf("3. Mostrar Memoria\n");
+        printf("4. Salir\n");
 
-        printf("Select an option: ");
+        printf("Seleccione una opcion: ");
         scanf("%d", &option);
 
         switch (option) {
@@ -166,6 +178,10 @@ int main() {
                 mostrar();
                 break;
             case 3:
+                MostrarMemoria();
+                break;
+            case 4:
+                printf("Saliendo...\n");
                 return 0;
             default:
                 printf("Opcion Invalida :( Intente otra vez.\n");
