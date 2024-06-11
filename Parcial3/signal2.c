@@ -7,14 +7,18 @@ void capturar_control_c(int signal){
 
 int main(){
     //int k;
-    int op;
+    char op;
     char señal[20];
+    printf("%d\n", getpid());
     do{
+        signal(SIGINT, capturar_control_c);
+        printf("Introduce la señal que deseas mandar: \n");
 
-        printf("¿Desea mandar otra señal?\n");
-        printf("op == 1 SI  |   op != 1 SALIR\n\n");
-        printf("op:");
-        scanf("%d",op);
-    }while (op == 1);
+        getchar();
+        printf("¿Desea mandar otra señal? (s/n)\n");
+        __fpurge(stdin);
+        scanf("%c",&op);
+        printf("%s\n",&op);
+    }while (op == 's');
     return 0;
 }

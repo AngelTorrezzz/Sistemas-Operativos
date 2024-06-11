@@ -12,8 +12,8 @@ void tratar_alarma(  ){
 int main( void ){
     //Investigar la estructura sigaction
     //QUE LO NO LO ACEPTE Y DESPUES QUE SI LO HAGA
-    struct sigaction act;
-    sigset_t mask;
+    struct sigaction act;//estructura de señales
+    sigset_t mask;//mascara de señales
 
     /*especifica el manejador*/
 
@@ -21,7 +21,7 @@ int main( void ){
         //sa_handler    = SIG_DFL para la accion por defecto
         //              = SIG_ING para ignorar la señal
         //              = Controlar que responderá a la señal
-    act.sa_restorer = NULL; //obsoleto, no se debe utilizar
+    //act.sa_restorer = NULL; //obsoleto, no se debe utilizar
     act.sa_flags = 0;   //ninguna accion especifica
 
     /*inicia configuracion de bloqueo de la señal 2 SIGINT*/
@@ -31,7 +31,7 @@ int main( void ){
     //sigprocmask( SIG_SETMASK, &mask, NULL );
     /*termina configuracion de bloqueo*/
     
-    sigaction( SIGALRM, &act, NULL );
+    sigaction( SIGALRM, &act, NULL );//señal de alarma
     alarm(1);
 
     while(1){

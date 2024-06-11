@@ -21,13 +21,14 @@ int main( void ){
         //sa_handler    = SIG_DFL para la accion por defecto
         //              = SIG_ING para ignorar la señal
         //              = Controlar que responderá a la señal
-    act.sa_restorer = NULL; //obsoleto, no se debe utilizar
+    //act.sa_restorer = NULL; //obsoleto, no se debe utilizar
     act.sa_flags = 0;   //ninguna accion especifica
 
     /*inicia configuracion de bloqueo de la señal 2 SIGINT*/
     sigemptyset( &mask );
-    sigaddset( &mask, SIGINT );//Ya no responde al ctrl-c
-    sigprocmask( SIG_SETMASK, &mask, NULL );
+    //sigaddset( &mask, SIGINT );//Ya no responde al ctrl-c
+    //sigaddset( &mask, SIGTSTP );//Ya no responde al ctrl-z
+    //sigprocmask( SIG_SETMASK, &mask, NULL );
     /*termina configuracion de bloqueo*/
     
     sigaction( SIGALRM, &act, NULL );

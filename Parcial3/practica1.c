@@ -1,73 +1,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <signal.h>
 #include <sys/wait.h>
-#include <time.h>
-#include <unistd.h>
 
-/*
-Escriba un programa con un proceso padre y un proceso hijo. Cuando el proceso hijo tarde mas de 10 segundos
-en terminar, el proceso padre enviara la señal 9 a su proceso hijo.
+pid_t child_pid;
 
-Explique el funcionamiento de la funcion pause. Muestre y explique un ejemplo del uso de esta función.
-*/
-
-void matarHijo( int signal )
-{
-    kill(getpid(), signal);
+void handle_alarm(int sig) {
+    if (sig == SIGALRM) {
+        printf("10 segundos han pasado. Enviando señal SIGKILL al proceso hijo.\n");
+        kill(child_pid, SIGKILL);
+        printf("Proceso hijo terminado.\n");
+    }
 }
 
-int main()
-{
-    pid_t pid;
-    clock_t inicio, fin; // Variables para medir el tiempo
-    double tiempo;
-    struct sigaction act;
-    sigset_t mask;
+int main() {
+    child_pid = fork();
 
-    act.sa_handler = matarHijo;
-    sigemptyset(&act.sa_mask);
-    act.sa_flags = 0; // ninguna accion especifica
+    if (child_pid < 0) {
+        perror("fork falló");
+        exit(1);
+    }
 
-    pid = fork();
-    if (pid > 0)
-    { // Proceso PADRE
-        printf("PADRE: Iniciado pid: %d\n", getpid());
-        inicio = clock();
-        int bandera = 1;
-        while ( bandera == 1)
-        {
-            fin = clock();
-            tiempo = ((double)(fin - inicio)) / CLOCKS_PER_SEC;
-            // printf("%.1f\n", tiempo);
-            if (tiempo >= 5)
-            {
-                //printf("Matar Hijo\n");
-                if (kill(pid, SIGINT) == -1)
-                {
-                    perror("Error al enviar la señal al proceso hijo");
-                    exit(EXIT_FAILURE);
-                }
-                printf("Señal enviada al proceso hijo.\n");
-                bandera = 0;
-                printf("Bander: %d\n", bandera);
-            }
+    if (child_pid == 0) {
+        // Proceso hijo
+        printf("Proceso hijo iniciado.\n");
+        // Simular un trabajo largo (más de 10 segundos)
+        sleep(15);
+        printf("Proceso hijo terminado.\n");
+        exit(0);
+    } else {
+        // Proceso padre
+        printf("Proceso padre iniciado.\n");
+        struct sigaction sa;
+        sa.sa_handler = handle_alarm;
+        sa.sa_flags = 0;
+        sigemptyset(&sa.sa_mask);
+
+        if (sigaction(SIGALRM, &sa, NULL) == -1) {
+            perror("sigaction falló");
+            exit(1);
         }
-        while(1){
-            printf("Estoy en el proceso Padre");
-            sleep(1);
-        }
+
+        alarm(10);
+
+        int status;
+        waitpid(child_pid, &status, 0);//
+        printf("Proceso padre terminado.\n");
     }
-    else
-    { // Proceso HIJO
-        printf("HIJO: Iniciado pid: %d\n", getpid());
-        signal(SIGKILL, matarHijo);
-        while(1){
-            
-        }
-        //sigaction(SIGALRM, &act, NULL);
-        //pause();
-        //alarm(1);
-    }
-    return EXIT_SUCCESS;
+
+    return 0;
 }
