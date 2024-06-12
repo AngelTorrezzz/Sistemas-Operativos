@@ -8,12 +8,18 @@ void capturar_control_c(int signal){
 }
 
 int main(){
-    //int k;
-    signal(SIGINT, capturar_control_c);
+    //signal(SIGINT, capturar_control_c);
+
+    struct sigaction sa;
+    sa.sa_handler = capturar_control_c;
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+    sigaction(SIGINT, &sa, NULL);
+
     printf("%d\n", getpid());
     while(1){
 
     }
-    //k++;
+
     return 0;
 }
